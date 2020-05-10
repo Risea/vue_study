@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>01_helloword</title>
+
+    <style>
+        .color{
+            color: #666;
+        }
+
+        .color1{
+            color: red;
+        }
+        .color2{
+            color: green;
+        }
+        .bg1{
+            background-color: #CCC;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <p :class="'color'">class 样式测试1</p>
+        <p :class="cls">class 样式测试2</p>
+        <button @click="update">更新 样式测试2</button><br>
+        对象样式设置
+        <p :class="{color2: true, bg1: true}">:class设置为对象有字体颜色和背景</p>
+        <p :class="{color2: isC2, bg1: true}">:class设置为对象有字体颜色和背景</p>
+        <button @click="update2">更新 color2</button><br>
+        数组样式设置
+        <p :class="['color2', 'bg1']">:class设置为数组 有字体颜色和背景</p>
+        <p :class="arr">:class设置为vue数组 有字体颜色和背景</p>
+
+        <br><br><br>Style -------------
+        <p :style="{color: color1, fontSize: size+'px'}">Style样式设置</p>
+        <br><br><br>if else --------------
+        <p v-if="ok">v-if设置   --> 成功</p>
+        <p v-else>v-else设置  --> 失败</p>
+        <p v-show="ok">v-show设置   --> 成功</p>
+        <p v-show="!ok">v-show设置  --> 失败</p>
+        <button @click="ok = !ok">切换</button>
+
+        <br><br><br>v-for 循环 -------------<br>
+        <table style="width: 500px;">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>name</td>
+                    <td>age</td>
+                    <td>option</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(p, index) in persons" :key="index">
+                    <td>{{index}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.age}}</td>
+                    <td><button @click="updateP(index, 'alaia')">更新Name</button><button @click="updateP2(index, {name:'alaia', age: 19})">更新对象</button><button @click="deleteP(index)">删除</button></td>
+                </tr>
+            </tbody>
+        </table>
+        遍历对象
+        <ul>
+            <li v-for="(val, key) in persons[1]" :key="key">
+                {{key}}  --->  {{val}}
+            </li>
+        </ul>
+        过滤 及 排序<br>
+        <input v-model="sname">
+        <table style="width: 500px;">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>name</td>
+                    <td>age</td>
+                    <td>option</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(p, index) in fpersons" :key="index">
+                    <td>{{index}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.age}}</td>
+                    <td><button @click="updateP(index, 'alaia')">更新Name</button><button @click="updateP2(index, {name:'alaia', age: 19})">更新对象</button><button @click="deleteP(index)">删除</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <button>年龄升序</button>
+            <button>年龄降序</button>
+            <button>原始顺序</button>
+        </div>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script>
+
+        // MVVM
+        /**
+        * Model : data
+        * View : <div>
+        * ViewModel: Vue实例对象
+        **/
+        var app = new Vue({     // 配置对象 选项
+            el: '#app',
+            data: {
+                cls: 'color1',
+                isC2: true,
+                arr: ['color2', 'bg1'],
+                color1: '#2394F9',
+                size: 16,
+                ok: true,
+                persons: [
+                    {name: "Seands", age: 100},
+                    {name: "aaa", age: 18},
+                    {name: "bbb", age: 17},
+                    {name: "ccc", age: 19}
+                ],
+                sname: ''
+            },
+            methods: {
+                update() {
+                    this.cls = 'color2';
+                },
+                update2(){
+                    this.isC2 = false;
+                },
+                deleteP(index){
+                    // 删除某个元素 页面也能刷新
+                    this.persons.splice(index, 1);
+                },
+                updateP(index, name){
+                    // 直接更新 某个元素的属性 页面能够刷新
+                    this.persons[index].name = name;
+                },
+                updateP2(index, p2){
+                    // 更新数组中 某个元素 页面无法刷新
+                    // this.persons[index] = p2;
+                    this.persons.splice(index, 1, p2);
+                }
+            },
+            computed: {
+                fpersons(){
+                    const {sname, persons} = this;
+                    return persons.filter(p => p.name.indexOf(sname) >= 0);
+                }
+            }
+            
+        });
+        console.log(app);
+
+        // :class 样式设置
+        // :class 中可以直接设置样式 'className'
+        // :class 可以设置为        字符串类型数据
+        // :class 可以设置为        对象型数据
+        // :class 可以设置为        数组
+
+        // v-if else: 判断false时，不会创建标签元素
+        // v-show: 会创建标签元素 display: none;    如果需要频繁 切换   用v-show比较好，不用创建、删除元素
+
+        // v-for 循环 数组更新检测、vue data中改写了部分数组操作方法
+        // 详见https://cn.vuejs.org/v2/guide/list.html
+    </script>
+</body>
+
+</html>

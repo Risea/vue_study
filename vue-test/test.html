@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>01_helloword</title>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-model="message">
+        <p>Hello {{message}}</p>
+        <p>Hello {{message.toUpperCase()}}</p>
+        <p v-html="msg1"></p>
+        <p v-text="msg1"></p>
+
+
+        <img v-bind:src="imgUrl" alt="img" width="300" />
+
+        <br>
+        <br>
+        <button v-on:click="to_baidu">to Baidu</button>
+
+        <button @click="to_baidu_search('草莓')">to Baidu search</button>
+        <br>
+        <br>
+
+        姓: <input v-model="firstName"><br>
+        名: <input v-model="lastName"><br>
+        姓名: <input v-model="fullName1"><br>
+        姓名: <input v-model="fullName2"><br>
+        姓名: <input v-model="fullName3"><br>
+
+        {{fullName1}} | {{fullName1}} | {{fullName1}} | 
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+    <script src="./vue.js"></script>
+    <script>
+
+        // MVVM
+        /**
+        * Model : data
+        * View : <div>
+        * ViewModel: Vue实例对象
+        **/
+        var app = new Vue({     // 配置对象 选项
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                msg1: '<a href="http://www.baidu.com" target="_blank">百度一下</a>',
+                imgUrl: 'http://attach.bbs.miui.com/forum/201401/11/145825zn1sxa8anrg11gt1.jpg',
+                firstName: "cn",
+                lastName: "Seands",
+                fullName2: "cn.Seands"
+            },
+            methods: {
+                to_baidu() {
+                    window.location.href = "http://www.baidu.com";
+                },
+                to_baidu_search(param) {
+                    window.location.href = "https://www.baidu.com/s?wd=" + param;
+                }
+            },
+            computed: {
+                fullName1() {
+                    console.log("页面调用多次fullName1...只打印一次，说明计算属性有缓存");
+                    return this.firstName + "." + this.lastName;
+                },
+                fullName3: {
+                    get() {
+                        return this.firstName + "." + this.lastName;
+                    },
+                    set(val){       // 当前值发生变化时、
+                        const arr = val.split(".");
+                        this.firstName = arr[0];
+                        this.lastName = arr[1];
+                    }
+                }
+            },
+            watch: {
+                firstName(newVal, oldVal) {
+                    console.log(oldVal, '---->', newVal);
+                    this.fullName2 = newVal + "." + this.lastName;
+                }
+            }
+        });
+        console.log(app);
+        app.message = 'aaa';
+        app.$watch('lastName', function(newVal, oldVal){
+            console.log(oldVal, '---->', newVal);
+            this.fullName2 = this.firstName + "." + newVal;
+        })
+
+        // v-model 双向绑定
+
+        // a. 双括号 表达式
+        // v-text : text content
+        // v-html : inner Html
+
+        // b. 指令-数据强绑定
+        // v-bind:src 简写:src
+
+        // c. 指令-绑定事件监听
+        // v-on:click 简写@click
+
+        // d. 计算属性 computed
+        // 初始化时就会执行、改变是也会触发
+        // 计算属性、通过get、set方法可以双向绑定两个数据、有缓存
+
+        // e. 监视属性
+        // watch方法监视
+
+
+    </script>
+</body>
+
+</html>
