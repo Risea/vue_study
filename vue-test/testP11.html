@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>01_helloword</title>
+
+    <style>
+        .out{
+            width: 100px; 
+            height: 100px;
+            background: indianred;
+        }
+
+        .inner{
+            width: 50px; 
+            height: 50px;
+            background: khaki;
+        }
+        .inner2{
+            width: 50px; 
+            height: 50px;
+            background: lightblue;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div id="app">
+        <button @click="click($event)">事件绑定</button>
+        <button @click="click2(123, $event)">事件绑定--</button>
+        <br><br>
+        <div @click="click3" class="out">
+            <div @click="click4" class="inner"></div>
+            <div @click.stop="click5" class="inner2"></div>
+        </div>
+        <a href="http://www.baidu.com" target="_blank" @click.prevent="click6">百度 Go</a>
+        <br>
+        <input @keyup="click7">
+        <input @keyup.13="click8">
+        <input @keyup.enter="click8">
+
+        <br><br><br>
+        表单数据收集<br>
+        <form @submit.prevent="submitHandle">
+            <div><span>用户名:</span><input name="username" v-model="username"></div>
+            <div><span>密码:</span><input type="password" v-model="password"></div>
+            <div><span>性别:</span>
+                <input type="radio" value="1" name="sex" v-model="sex"><label for="sex1">男</label>  |
+                <input type="radio" value="0" name="sex" v-model="sex"><label for="sex0">女</label></div>
+            <div>
+                <span>爱好:</span>
+                <input type="checkbox" name="aaa" value="1" v-model="hobby">游戏  |
+                <input type="checkbox" name="aaa" value="2" v-model="hobby">旅行  |
+                <input type="checkbox" name="aaa" value="3" v-model="hobby">看书  
+            </div>
+            <div><span>城市:</span>
+                <select v-model="cityId">
+                    <option value="-1"> -- 选择城市 --</option>
+                    <option v-for="(item, index) in allCitys" :key="index" :value="item.id">{{item.name}}</option>
+                </select>
+            </div>
+            <div>
+                <span>个人简介:</span><textarea v-model="desc"></textarea>
+            </div>
+            <button type="submit">提交</button>
+        </form>
+
+    </div>
+
+    <script src="./vue.js"></script>
+    <script>
+
+        // MVVM
+        /**
+        * Model : data
+        * View : <div>
+        * ViewModel: Vue实例对象
+        **/
+        var app = new Vue({     // 配置对象 选项
+            el: '#app',
+            data: {
+                username: '',
+                password: '',
+                sex: 1,
+                hobby: [1, 2],
+                allCitys: [{id: 1, name: "BJ"}, {id: 2, name: "SH"}, {id: 3, name: "GD"}],
+                cityId: 2,
+                desc: ''
+            },
+            methods: {
+                click(event){
+                    console.log(event);
+                    alert(event.target.innerHTML);
+                },
+                click2(num, event){
+                    console.log("---------");
+                    alert(event.target.innerHTML + num);
+                },
+                click3(){
+                    alert("out");
+                },
+                click4(event){
+                    alert("inner  ---> ");
+                    // 阻止事件冒泡
+                    // event.stopPropagation();
+                },
+                click5(){
+                    alert("inner2");
+                },
+                click6(event){
+                    alert("...");
+                    // 阻止事件默认行为
+                    // event.preventDefault();
+                },
+                click7(event){
+                    const data = event.target.value;
+                    if(event.keyCode === 13){
+                        alert(data);
+                    }
+                },
+                click8(event){
+                    const data = event.target.value;
+                    alert(data);
+                },
+                submitHandle(){
+                    console.log(this.username);
+                    console.log(this.password);
+                    console.log(this.sex);
+                    console.log(this.hobby);
+                    console.log(this.cityId);
+                    console.log(this.desc);
+                }
+            }
+            
+        });
+        console.log(app);
+
+        // @click 事件绑定  单个$event参数可以省略
+        // 表单数据显示及获取
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>01_helloword</title>
+
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <p>{{data}}</p>
+        <p v-s-upper="data"></p>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script src="./vue-s.js"></script>
+    <script>
+        Vue.use(MyPlugin);
+
+        var app = new Vue({     // 配置对象 选项
+            el: '#app',
+            mounted(){
+                console.log("mounted...");
+            },
+            data: {
+                data: 'Aaa'
+            }
+        });
+
+        app.$myMethod();
+    </script>
+</body>
+</html>

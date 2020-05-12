@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>01_helloword</title>
+
+    <style>
+        /* 显示、隐藏中过渡效果 */
+        .xxx-enter-active, .xxx-leave-active{
+            transition: opacity 2s;
+        }
+
+        /* 显示前、隐藏后样式 */
+        .xxx-enter, .xxx-leave-to{
+            opacity: 0;
+        }
+
+
+
+        .aaa-enter-active{
+            transition: all .3s ease;
+        }
+        .aaa-leave-active{
+            transition: all 3s ease;
+        }
+
+        .aaa-enter, .aaa-leave-to{
+            opacity: 0;
+            transform: translateX(25px);
+            transform: -webkit-translateX(25px);
+        }
+
+
+
+        .bbb-enter-active{
+            animation: amin 1s;
+        }
+
+        .bbb-leave-active{
+            animation: amin 1s reverse;
+        }
+
+        @keyframes amin {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        [v-cloak]{
+            display: none;
+        }
+
+    </style>
+    
+</head>
+
+<body>
+    <div id="app">
+        <button @click="destoryVM">destory vm</button>
+        
+        <p v-show="isShow">Vue 生命周期</p>
+
+
+        Vue动画------------------------------------<br>
+        <transition name="xxx">
+            <p v-show="flag">动画文本</p>
+        </transition>
+        <button @click="flag = !flag">切换</button>
+
+        <transition name="aaa">
+            <p v-show="flag2">动画文本2</p>
+        </transition>
+        <button @click="flag2 = !flag2">切换</button>
+
+        <br>
+        <transition name="bbb">
+            <div v-show="flag3" style="display: inline-block;">sss</div>
+        </transition>
+        <br>
+        <button @click="flag3 = !flag3">切换</button>
+
+        <br><br><br>
+        Vue过滤器------------------------------------<br>
+        当前时间: {{now}}  <br>
+        <p v-cloak>当前时间: {{now | dateFormat('YYYY-MM-DD HH:mm:ss')}}</p>
+
+        <br><br><br>
+        Vue其他指令------------------------------------<br>
+        <p ref="p">ref属性</p>
+        <button @click="refTest">获取Ref</button>
+        <br>
+        <p v-upper-text="msg1"></p>
+        <p v-upper-text="msg"></p>
+        <p v-lower-text="msG2"></p>
+        <button @click="msg = 'update Msg'">update</button>
+    </div>
+
+    
+
+    <script src="./vue.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.25.3/moment.js"></script>
+    
+    <script>
+
+        // Vue.filter('dateFormat', function(val, format){
+        //     return new moment(val).format(format || 'YYYY-MM-DD HH:mm:ss');
+        // });
+
+        // ES6语法、与python一样 形参默认值
+        Vue.filter('dateFormat', function(val, format='YYYY-MM-DD HH:mm:ss'){
+            return new moment(val).format(format);
+        });
+
+        // 全局注册指令
+        Vue.directive('upper-text', {
+            bind: function(el, binding){
+                //console.log("---------------------------------------");
+                //console.log(el);
+                //console.log(binding);
+                //console.log("---------------------------------------");
+                const data = binding.value || binding.expression;
+                //console.log(data);
+                el.textContent = data.toUpperCase();
+            },
+            componentUpdated: function(el, binding){
+                console.log("************************************");
+                console.log(el);
+                console.log(binding);
+                console.log("************************************");
+                const data = binding.value || binding.expression;
+                el.textContent = data.toUpperCase();
+            }
+        });
+
+        var app = new Vue({     // 配置对象 选项
+            el: '#app',
+            data: {
+                isShow: true,
+                flag: true,
+                flag2: true,
+                flag3: true,
+                now: new Date(),
+                msg: 'msg_data'
+            },
+            methods: {
+                destoryVM(){
+                    this.$destroy();
+                },
+                refTest(){
+                    console.log(this.$refs);
+                    alert(this.$refs["p"].textContent);
+                }
+            },
+
+            directives: {
+                'lower-text': function(el, binding){
+                    const data = binding.value || binding.expression;
+                    el.textContent = data.toLowerCase();
+                }
+            },
+
+            // 生命周期
+            // 初始化 ----------------------
+            beforeCreate(){
+                console.log("beforeCreate...");
+            },
+            created(){
+                console.log("created...");
+            },
+            beforeMount(){
+                console.log("beforeMount...");
+            },
+            mounted() {
+                // 初始化完成之后调用  回调函数中this  只掉用1次
+                console.log("mounted...");
+                this.intervalId = setInterval(() => {
+                    console.log("...");
+                    //this.isShow = !this.isShow;
+                }, 1000);
+            },
+
+
+            // 更新 ------------------------------
+            beforeUpdate(){
+                console.log("beforeUpdate...");
+            },
+            updated(){
+                console.log("updated...");
+            },
+
+
+            // 销毁 ------------------------------
+            beforeDestroy(){
+                // 销毁之前调用  只掉用1次
+                console.log("beforeDestroy...");
+                clearInterval(this.intervalId);
+            },
+            destroyed(){
+                console.log("destroy...");
+            }
+            
+        });
+        console.log(app);
+
+        // Vue生命周期
+        // mounted: ajax、定时器
+        // beforeDestroy: 收尾工作、清楚定时任务等
+
+        // 动画
+        // 1. transition标签 name
+        // 2. 定义样式  过渡样式、隐藏后的样式
+
+        // 过滤器
+        // filter
+
+        // 指令
+        // ref、v-cloak、自定义指令
+    
+        
+    </script>
+</body>
+
+</html>
