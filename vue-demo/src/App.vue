@@ -9,7 +9,7 @@
     </div>
 
     <div style="height: 20px;">&nbsp;</div>
-    <div class="container" style="border: 1px solid #ccc; padding: 20px 15px; margin-bottom: 50px;">
+    <div class="container">
       <TodoHeader2 @addTodo="addTodo" />
       <TodoList :todos="todos" />
       <!-- <TodoFooter :todos="todos" :delComplete="delComplete" :selectAll="selectAll" /> -->
@@ -24,23 +24,9 @@
 
 
     <div style="height: 20px;">&nbsp;</div>
-    <div v-show="searchFlag">loading...</div>
-    <div v-show="!searchFlag">
-      前十数据
-      <table class="table">
-        <tr>
-          <td>排名</td>
-          <td>项目名</td>
-          <td>项目地址</td>
-          <td>Star数量</td>
-        </tr>
-        <tr v-for="(item, index) in searchList" :key="index">
-          <td>{{index}}</td>
-          <td>{{item.name}}</td>
-          <td>{{item.url}}</td>
-          <td>{{item.star}}</td>
-        </tr>
-      </table>
+    <div class="container">
+      <GithubSearch />
+      <GithubMain></GithubMain>
     </div>
   </div>
 </template>
@@ -56,7 +42,10 @@ import TodoFooter from './components/TodoFooter.vue'
 
 import PubSub from 'pubsub-js'
 import StorageUtil from './utils/storage-util'
-import axios from 'axios'
+
+
+import GithubSearch from './components/GithubSearch.vue'
+import GithubMain from './components/GithubMain'
 
 const TODO_KEY = 'todos';
 export default {
@@ -65,7 +54,8 @@ export default {
     CommentAdd, CommentList,
     //TodoHeader, 
     TodoHeader2,
-    TodoList, TodoFooter
+    TodoList, TodoFooter,
+    GithubSearch, GithubMain
   },
   data(){
     return {
@@ -139,23 +129,7 @@ export default {
     );
 
     // https://developer.github.com/v3/
-    const url = 'https://api.github.com/search/repositories?q=r&sort=stars';
-    axios.get(url)
-    .then(function (response) {
-      console.log(response);
-      if(response.status == 200){
-        var datas = response.data.items;
-        this.searchList = [];
-        datas.forEach(item => {
-          const data = {"name": item.name, "url": item.url, "star": item.watchers_count};
-          this.searchList.push(data);
-        })
-      }
-    })
-    .catch(function (error) {
-      alert("查询失败...");
-      console.log(error);
-    });
+    
 
   }
 }
@@ -169,5 +143,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.container{
+  border: 1px solid #ccc; 
+  padding: 20px 15px; 
+  margin-bottom: 50px;
 }
 </style>
